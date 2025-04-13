@@ -1,4 +1,3 @@
-// components/BarChart.js
 'use client'
 import React, { useEffect, useRef, useState } from 'react';
 import * as echarts from 'echarts';

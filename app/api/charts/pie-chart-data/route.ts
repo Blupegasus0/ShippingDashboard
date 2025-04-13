@@ -10,15 +10,8 @@ export async function GET(req) {
             GROUP BY mode
         `).all();
 
-        const totalCapacity = 10000; // Replace with your actual warehouse capacity
-        const currentVolume = db.prepare(`
-            SELECT SUM(volume) AS currentVolume 
-            FROM shipments
-        `).get().currentVolume || 0;
 
-        const utilizationRate = (currentVolume / totalCapacity) * 100;
-
-        return new Response(JSON.stringify({ volumeByMode, utilizationRate }), {
+        return new Response(JSON.stringify({ volumeByMode }), {
             status: 200,
             headers: {
                 'Content-Type': 'application/json',

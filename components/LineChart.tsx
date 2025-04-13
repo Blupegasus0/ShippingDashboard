@@ -25,7 +25,7 @@ const LineChart = () => {
 
     const option = {
       title: {
-        text: 'Warehouse Capacity Over the Year',
+        text: 'Amount of Packages Received During the Year',
       },
       tooltip: {
         trigger: 'axis',
@@ -41,7 +41,7 @@ const LineChart = () => {
         {
           name: 'Packages Received',
           type: 'line',
-          data: lineData.map(item => item.count), // Counts on the y-axis
+          data: lineData.map(item => item.count),
         },
       ],
     };

@@ -10,6 +10,7 @@ export async function GET(req) {
             WHERE status = 'received'
             GROUP BY DATE(arrival_date), carrier
             ORDER BY DATE(arrival_date)
+            LIMIT 25
         `).all();
 
         return new Response(JSON.stringify(data), {

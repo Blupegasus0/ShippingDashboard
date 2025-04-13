@@ -5,7 +5,6 @@ import * as echarts from 'echarts';
 const PieChart = () => {
   const chartRef = useRef(null);
   const [volumeData, setVolumeData] = useState([]);
-  const [utilizationRate, setUtilizationRate] = useState(0);
 
   useEffect(() => {
     const fetchPieChartData = async () => {
@@ -13,7 +12,6 @@ const PieChart = () => {
         const response = await fetch('/api/charts/pie-chart-data');
         const data = await response.json();
         setVolumeData(data.volumeByMode);
-        setUtilizationRate(data.utilizationRate);
       } catch (error) {
         console.error('Error fetching pie chart data:', error);
       }
@@ -32,7 +30,7 @@ const PieChart = () => {
 
     const option = {
       title: {
-        text: 'Shipment Volume by Mode',
+        text: 'Number of Packages by Mode',
         left: 'center',
       },
       tooltip: {
@@ -40,7 +38,7 @@ const PieChart = () => {
       },
       series: [
         {
-          name: 'Modes',
+          name: 'Packages',
           type: 'pie',
           radius: '50%',
           data: pieData,
@@ -65,7 +63,6 @@ const PieChart = () => {
   return (
     <div>
       <div ref={chartRef} style={{ width: '100%', height: '400px' }} />
-      <h3>Current Warehouse Utilization Rate: {utilizationRate.toFixed(2)}%</h3>
     </div>
   );
 };

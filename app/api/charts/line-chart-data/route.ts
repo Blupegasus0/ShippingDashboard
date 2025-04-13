@@ -5,10 +5,10 @@ const db = new Database('db.sqlite', { verbose: console.log });
 export async function GET(req) {
     try {
         const data = db.prepare(`
-            SELECT DATE(arrival_date) AS date, COUNT(*) AS count 
+            SELECT STRFTIME('%Y-%m', arrival_date) AS date, COUNT(*) AS count 
             FROM shipments 
-            GROUP BY DATE(arrival_date)
-            ORDER BY DATE(arrival_date)
+            GROUP BY date
+            ORDER BY date;
         `).all();
 
         return new Response(JSON.stringify(data), {
