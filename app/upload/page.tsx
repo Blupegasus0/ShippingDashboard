@@ -1,11 +1,15 @@
 'use client'
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 function UploadPage () {
     const [file, setFile] = useState(null);
+    const [uploadSuccess, setUploadSuccess] = useState(false);
+    const router = useRouter();
 
     function handleFileChange(event) {
         setFile(event.target.files[0]);
+        setUploadSuccess(false);
     }
 
     async function handleSubmit (event) {
@@ -21,10 +25,16 @@ function UploadPage () {
         });
 
         if (response.ok) {
-            console.log('File uploaded successfully');
+            console.log('File processed successfully');
+            setUploadSuccess(true);
         } else {
-            console.error('File upload failed');
+            console.error('File processing failed');
+            setUploadSuccess(false);
         }
+    }
+
+    function handleNavigate() {
+        router.push('/dashboard');
     }
 
     return (
@@ -34,6 +44,13 @@ function UploadPage () {
             <input type="file" accept=".csv" onChange={handleFileChange} />
             <button type='submit'>Upload</button>
         </form>
+
+        { uploadSuccess && (
+            <div>
+                    <p>File uploaded successfully!</p>
+                    <button onClick={handleNavigate}>Go to Dashboard</button>
+                </div>
+        )}
     </div>
     );
 }
