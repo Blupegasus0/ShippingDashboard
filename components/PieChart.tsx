@@ -1,60 +1,73 @@
 'use client'
+import React, { useEffect, useRef, useState } from 'react';
 import * as echarts from 'echarts';
-import { useEffect, useRef } from 'react';
 
-function PieChart() {
-    const chartRef = useRef(null);
+const PieChart = () => {
+  const chartRef = useRef(null);
+  const [volumeData, setVolumeData] = useState([]);
+  const [utilizationRate, setUtilizationRate] = useState(0);
 
-    useEffect(function() {
-        const pieChart = echarts.init(chartRef.current);
-        
-        var option = {
-            title: {
-                text: 'Referer of a Website',
-                subtext: 'Fake Data',
-                left: 'center'
+  useEffect(() => {
+    const fetchPieChartData = async () => {
+      try {
+        const response = await fetch('/api/charts/pie-chart-data');
+        const data = await response.json();
+        setVolumeData(data.volumeByMode);
+        setUtilizationRate(data.utilizationRate);
+      } catch (error) {
+        console.error('Error fetching pie chart data:', error);
+      }
+    };
+
+    fetchPieChartData();
+  }, []);
+
+  useEffect(() => {
+    const myChart = echarts.init(chartRef.current);
+
+    const pieData = volumeData.map(item => ({
+      value: item.volume,
+      name: item.mode,
+    }));
+
+    const option = {
+      title: {
+        text: 'Shipment Volume by Mode',
+        left: 'center',
+      },
+      tooltip: {
+        trigger: 'item',
+      },
+      series: [
+        {
+          name: 'Modes',
+          type: 'pie',
+          radius: '50%',
+          data: pieData,
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)',
             },
-            tooltip: {
-                trigger: 'item'
-            },
-            legend: {
-                orient: 'vertical',
-                left: 'left'
-            },
-            series: [
-                {
-                    name: 'Access From',
-                    type: 'pie',
-                    radius: '50%',
-                    data: [
-                        { value: 1048, name: 'Search Engine' },
-                        { value: 735, name: 'Direct' },
-                        { value: 580, name: 'Email' },
-                        { value: 484, name: 'Union Ads' },
-                        { value: 300, name: 'Video Ads' }
-                    ],
-                    emphasis: {
-                        itemStyle: {
-                            shadowBlur: 10,
-                            shadowOffsetX: 0,
-                            shadowColor: 'rgba(0, 0, 0, 0.5)'
-                        }
-                    }
-                }
-            ]
-        };
+          },
+        },
+      ],
+    };
 
-        pieChart.setOption(option);
+    myChart.setOption(option);
 
-        return () => {
-            pieChart.dispose();
-        };
+    return () => {
+      myChart.dispose();
+    };
+  }, [volumeData]);
 
-    }, [])
-
-
-    return <div ref = {chartRef} style={{ width: '100%', height: '400px' }} />
-}
+  return (
+    <div>
+      <div ref={chartRef} style={{ width: '100%', height: '400px' }} />
+      <h3>Current Warehouse Utilization Rate: {utilizationRate.toFixed(2)}%</h3>
+    </div>
+  );
+};
 
 export default PieChart;
-
