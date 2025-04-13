@@ -1,6 +1,6 @@
 ## Getting Started
 
-First install the necessary packages:
+After cloning, install the necessary packages:
 ```sh
 bun install # or your favorite package manager
 ```
