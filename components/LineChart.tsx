@@ -1,10 +1,15 @@
-'use client'
+'use client';
 import React, { useEffect, useRef, useState } from 'react';
 import * as echarts from 'echarts';
 
-const LineChart = () => {
-  const chartRef = useRef(null);
-  const [lineData, setLineData] = useState([]);
+interface LineChartData {
+  date: string;
+  count: number;
+}
+
+const LineChart: React.FC = () => {
+  const lineChartRef = useRef<HTMLDivElement | null>(null);
+  const [lineData, setLineData] = useState<LineChartData[]>([]);
 
   useEffect(() => {
     const fetchLineChartData = async () => {
@@ -21,18 +26,21 @@ const LineChart = () => {
   }, []);
 
   useEffect(() => {
-    const myChart = echarts.init(chartRef.current);
+    if (!lineChartRef.current || lineData.length === 0) return;
+
+    const chartInstance = echarts.init(lineChartRef.current);
 
     const option = {
       title: {
         text: 'Amount of Packages Received During the Year',
+        left: 'center',
       },
       tooltip: {
         trigger: 'axis',
       },
       xAxis: {
         type: 'category',
-        data: lineData.map(item => item.date), // Dates on the x-axis
+        data: lineData.map(item => item.date),
       },
       yAxis: {
         type: 'value',
@@ -40,20 +48,30 @@ const LineChart = () => {
       series: [
         {
           name: 'Packages Received',
-          type: 'line',
+          type: 'line' as const,
           data: lineData.map(item => item.count),
+          smooth: true,
+          lineStyle: {
+            width: 2,
+          },
+          symbol: 'circle',
+          symbolSize: 6,
         },
       ],
     };
 
-    myChart.setOption(option);
+    chartInstance.setOption(option);
 
     return () => {
-      myChart.dispose();
+      chartInstance.dispose();
     };
   }, [lineData]);
 
-  return <div ref={chartRef} style={{ width: '100%', height: '400px' }} />;
+  return (
+    <div className="bg-white shadow-md rounded-2xl p-4 w-full h-[400px]">
+      <div ref={lineChartRef} className="w-full h-full" />
+    </div>
+  );
 };
 
 export default LineChart;

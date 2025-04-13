@@ -1,10 +1,15 @@
-'use client'
+'use client';
 import React, { useEffect, useRef, useState } from 'react';
 import * as echarts from 'echarts';
 
-const PieChart = () => {
-  const chartRef = useRef(null);
-  const [volumeData, setVolumeData] = useState([]);
+interface VolumeByMode {
+  mode: string;
+  volume: number;
+}
+
+const PieChart: React.FC = () => {
+  const pieChartRef = useRef<HTMLDivElement | null>(null);
+  const [volumeData, setVolumeData] = useState<VolumeByMode[]>([]);
 
   useEffect(() => {
     const fetchPieChartData = async () => {
@@ -21,12 +26,9 @@ const PieChart = () => {
   }, []);
 
   useEffect(() => {
-    const myChart = echarts.init(chartRef.current);
+    if (!pieChartRef.current || volumeData.length === 0) return;
 
-    const pieData = volumeData.map(item => ({
-      value: item.volume,
-      name: item.mode,
-    }));
+    const chartInstance = echarts.init(pieChartRef.current);
 
     const option = {
       title: {
@@ -39,9 +41,12 @@ const PieChart = () => {
       series: [
         {
           name: 'Packages',
-          type: 'pie',
+          type: 'pie' as const,
           radius: '50%',
-          data: pieData,
+          data: volumeData.map(({ mode, volume }) => ({
+            name: mode,
+            value: volume,
+          })),
           emphasis: {
             itemStyle: {
               shadowBlur: 10,
@@ -53,16 +58,16 @@ const PieChart = () => {
       ],
     };
 
-    myChart.setOption(option);
+    chartInstance.setOption(option);
 
     return () => {
-      myChart.dispose();
+      chartInstance.dispose();
     };
   }, [volumeData]);
 
   return (
-    <div>
-      <div ref={chartRef} style={{ width: '100%', height: '400px' }} />
+    <div className="bg-white shadow-md rounded-2xl p-4 w-full h-[400px]">
+      <div ref={pieChartRef} className="w-full h-full" />
     </div>
   );
 };

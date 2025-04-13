@@ -12,6 +12,16 @@ module.exports = {
       bodySizeLimit: '20mb',
     },
   },
+
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/upload',
+        permanent: true,  // Make it permanent (301 redirect)
+      },
+    ];
+  },
 }
 
 export default nextConfig;
