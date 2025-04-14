@@ -19,3 +19,4 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - I couldn't find a good way to determine if packages are early or delayed so I considered delayed to be any package with received status that arrived more than 6 days ago.
 
 **The parsing is done using a pre-compiled binary. The binary was built on linux, so if there are any issues contact me an I will recompile if necessary.**
+**System dark mode causes visual bugs - use with light mode on**
